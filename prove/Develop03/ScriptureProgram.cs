@@ -1,11 +1,10 @@
 using System;
-
-class ScriptureProgram
+public class Program
 {
-    public static void Run()
+    public static void Main(string[] args)
     {
         string scriptureText = "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.";
-        ScriptureReference scriptureRef = new ScriptureReference("John 3:16");
+        ScriptureReference scriptureRef = new ScriptureReference("Romans 11:33");
         Scripture scripture = new Scripture(scriptureRef, scriptureText);
         scripture.Display();
 

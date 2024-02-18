@@ -1,12 +1,10 @@
 
+
+using System;
 // this class which represent the scrpture itself.
 //it will include properties that store the scripture refernce ("Reference") and a list of "ScriptureWord" objects("words")
 //The class provides methods to initialize the scripture with a reference and text, hide a random word, display the scripture, and check if all words are hidden.
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-class Scripture
+public class Scripture
 {
     private List<ScriptureWord> words = new List<ScriptureWord>();
     public ScriptureReference Reference { get; private set; }
@@ -16,8 +14,7 @@ class Scripture
         Reference = reference;
         words.AddRange(text.Split().Select(word => new ScriptureWord(word)));
     }
-
-    public void HideRandomWord()
+        public void HideRandomWord()
     {
         var wordsToHide = words.Where(word => !word.Hidden).ToList();
         if (wordsToHide.Any())
@@ -26,8 +23,7 @@ class Scripture
             wordToHide.Hide();
         }
     }
-
-    public void Display()
+      public void Display()
     {
         Console.WriteLine(Reference.ToString() + "\n");
         foreach (var word in words)
@@ -42,3 +38,5 @@ class Scripture
         return words.All(word => word.Hidden);
     }
 }
+
+
