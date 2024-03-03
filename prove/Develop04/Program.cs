@@ -1,39 +1,42 @@
 using System;
-// in the main program , adding list of the activity that the user will choose from.
-//useing whiel loop and uf statment
-
-class Program
+public class Program
 {
-    static void Main(string[] args)
+
+public static void Main()
+{
+    Activity[] activities = {
+        new BreathingActivity(" Start Breathing Activity", "Relax by breathing in and out slowly."),
+        new ReflectionActivity(" Start Reflection Activity", "Reflect on times in your life when you have shown strength and resilience."),
+        new ListingActivity(" Start Listing Activity", "Reflect on the good things in your life by listing as many as you can in a certain area.")
+    };
+
+    while (true)
     {
-        while(true)
+        Console.WriteLine("Select an activity:");
+        for (int i = 0; i < activities.Length; i++)
         {
-            Console.WriteLine("Maindfulness Program");
-            Console.WriteLine("1. Breathing Activity");
-            Console.WriteLine("2. Reflection Activity");
-            Console.WriteLine("3. Listing Activity");
-            Console.WriteLine("4. Exit  Application ");
+            Console.WriteLine($"{i + 1}. {activities[i].Name}");
+        }
 
-            Console.WriteLine("Choose an activity or exit:");
+        Console.WriteLine($"{activities.Length + 1}. Quit");
 
-            string choice = Console.ReadLine();
-            if (choice == "1")
-            {
+        int choice;
+        while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > activities.Length + 1)
+        {
+            Console.WriteLine("Invalid choice. Please try again.");
+        }
 
-            Console.WriteLine("Enter the duration in seconds: ");
-            int duration = int.Parse(Console.ReadLine());
-                //calling function for breathing
-            Activity activity = new BreathingActivity();
-            activity.Start(duration);
-            }
-    //         else  if  (choice == "2")
-    //         {
-    //             //calling reflection function
-    //             Console.WriteLine("Enter the duration in seconds:");
-    //             int duration = int.Parse(Console.ReadLine());
-    //             Activity activity = new ReflecitonActivity();
-    //         }
-    //         }
-    //     }
-    // }
-        }}}
+        if (choice == activities.Length + 1)
+        {
+            break;
+        }
+
+        Console.WriteLine("Enter the duration in seconds:");
+        int duration = int.Parse(Console.ReadLine());
+
+        activities[choice - 1].Start(duration);
+    }
+}
+}
+
+
