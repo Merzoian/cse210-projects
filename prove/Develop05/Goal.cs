@@ -1,4 +1,3 @@
-// Goal.cs
 using System;
 
 namespace EternalQuest
@@ -15,13 +14,18 @@ namespace EternalQuest
 
     public class SimpleGoal : Goal
     {
-        public int Value { get; set; }
+        public SimpleGoal(string description, int score, bool completed)
+        {
+            Description = description;
+            Score = score;
+            Completed = completed;
+        }
 
         public override void UpdateScore()
         {
             if (!Completed)
             {
-                Score = Value;
+                Score = 10;
                 Completed = true;
             }
         }
@@ -34,11 +38,19 @@ namespace EternalQuest
 
     public class EternalGoal : Goal
     {
-        public int Value { get; set; }
+        public int BonusPoints { get; set; }
+
+        public EternalGoal(string description, int score, int bonusPoints)
+        {
+            Description = description;
+            Score = score;
+            BonusPoints = bonusPoints;
+            Completed = false;
+        }
 
         public override void UpdateScore()
         {
-            Score += Value;
+            Score += BonusPoints;
         }
 
         public override string DisplayStatus()
@@ -53,11 +65,23 @@ namespace EternalQuest
         public int BonusPoints { get; set; }
         private int completedCount = 0;
 
+        public ChecklistGoal(string description, int score, int targetCount, int bonusPoints)
+        {
+            Description = description;
+            Score = score;
+            TargetCount = targetCount;
+            BonusPoints = bonusPoints;
+            Completed = false;
+        }
+
         public override void UpdateScore()
         {
             completedCount++;
-            Score += completedCount == TargetCount ? BonusPoints : 0;
-            Completed = completedCount == TargetCount;
+            if (completedCount == TargetCount)
+            {
+                Score += BonusPoints;
+                Completed = true;
+            }
         }
 
         public override string DisplayStatus()
