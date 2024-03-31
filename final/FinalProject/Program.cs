@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+// The programming class  for the main game logic and user interface 
 class Program
 {
     static void Main()

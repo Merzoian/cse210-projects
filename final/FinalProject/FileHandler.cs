@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+//file handler  is used to handle file operations like reading,writing and loading files from the system
 public class FileHandler
 {
     private const string FilePath = "Profile.txt";
