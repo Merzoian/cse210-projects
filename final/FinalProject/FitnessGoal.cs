@@ -6,26 +6,32 @@ public enum FitnessGoalType
     MuscleGain
 }
 
-public class FitnessGoal 
+public class FitnessGoal : Goal
 {
     public FitnessGoalType Type { get; set; }
     public double Target { get; set; }
     public double Progress { get; set; }
 
-    public FitnessGoal(FitnessGoalType type, double target, double progress)
+    public FitnessGoal(FitnessGoalType type, double target, string description, int score, bool completed) : base(description, score, completed)
     {
         Type = type;
         Target = target;
-        Progress = progress;
+        Progress = 0.0;
     }
 
-    public double GetProgressPercentage()
-    {
-        if (Target == 0)
-        {
-            return 0.0; // Prevent division by zero
-        }
 
-        return (Progress / Target) * 100.0;
+    public override void UpdateScore()
+    {
+        if (!Completed)
+        {
+            Progress = Target;
+            Completed = true;
+        }
+    }
+
+    public override string DisplayStatus()
+    {
+        return Completed? $"Progress: {Progress}/{Target}" : $"Progress: {Progress}/{Target}";
     }
 }
+  

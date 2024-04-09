@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-// The programming class  for the main game logic and user interface 
+using System.Runtime;
+
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
         Console.WriteLine("Welcome to the Fitness Tracker Program!");
 
@@ -11,8 +12,12 @@ class Program
         string name = Console.ReadLine();
 
         Console.Write("Enter your age: ");
-        int age = int.Parse(Console.ReadLine());
-
+        int age;
+        while (!int.TryParse(Console.ReadLine(), out age) || age < 0 || age > 150)
+        {
+        Console.WriteLine("Invalid age. Please enter a valid age between 0 and 150.");
+        Console.Write("Enter your age: ");
+        }
         Console.Write("Enter your weight (kg): ");
         double weight = double.Parse(Console.ReadLine());
 
@@ -26,7 +31,7 @@ class Program
         {
             Console.WriteLine("\nSelect an option:");
             Console.WriteLine("1. Add Exercise");
-            Console.WriteLine("2. Add Meal");
+            Console.WriteLine("2. Meals Ideas");
             Console.WriteLine("3. Add Fitness Goal");
             Console.WriteLine("4. Save Progress");
             Console.WriteLine("5. View Progress");
@@ -37,31 +42,28 @@ class Program
             switch (choice)
             {
                 case 1:
-                    Console.Write("Enter exercise type: ");
+                    Console.Write("Enter exercise type: strength or cardio: ");
                     string exerciseType = Console.ReadLine();
 
                     Console.Write("Enter exercise duration (minutes): ");
                     int exerciseDuration = int.Parse(Console.ReadLine());
 
-                    Console.Write("Enter calories burned: ");
-                    double caloriesBurned = double.Parse(Console.ReadLine());
-
-                    Exercise exercise = new Exercise(exerciseType, exerciseDuration, caloriesBurned);
+                    Exercise exercise = new Exercise(exerciseType, exerciseDuration, weight, age);
                     user.AddExercise(exercise);
+                    //Calculate and display the calories burned 
+                    double caloriesBurned= exercise.CalculateCaloriesBurned();
+                    Console.WriteLine($"Calories burned: {caloriesBurned}");
+
                     break;
                 case 2:
-                    Console.Write("Enter meal type: ");
+
+                    Console.Write("Enter meal type (Gaining weight or Losing weight): ");
                     string mealType = Console.ReadLine();
 
-                    Console.Write("Enter calories: ");
-                    double calories = double.Parse(Console.ReadLine());
-
-                    Console.WriteLine("Enter ingredients (comma-separated): ");
-                    string[] ingredients = Console.ReadLine().Split(',');
-                    List<string> ingredientList = new List<string>(ingredients);
-
-                    Meal meal = new Meal(mealType, calories, ingredientList);
-                    user.AddMeal(meal);
+                    List<Meal> mealIdeas = Meal.GetMealIdeas(mealType);
+                    Console.WriteLine("Recommended meals are as follows: \n");
+                    Meal.DisplayMealIdeas(mealIdeas);
+                
                     break;
                 case 3:
                     Console.Write("Enter fitness goal type (WeightLoss or MuscleGain): ");
@@ -71,45 +73,50 @@ class Program
                     Console.Write("Enter target value: ");
                     double targetValue = double.Parse(Console.ReadLine());
 
-                    Console.Write("Enter progress value: ");
-                    double progressValue = double.Parse(Console.ReadLine());
-
-                    FitnessGoal goal = new FitnessGoal(goalType, targetValue, progressValue);
+                    FitnessGoal goal = new FitnessGoal(goalType, targetValue, "Lose weight", 0, false);
                     user.AddFitnessGoal(goal);
+
+                    Console.Write("Enter new progress value: ");
+                    double newProgress = double.Parse(Console.ReadLine());
+
+                    goal.UpdateScore();
+                    Console.WriteLine($"Progress: {goal.DisplayStatus()}");
                     break;
                 case 4:
-                    FileHandler.SaveUserProfile(user);
+
+                    UserProfile.SaveUserProfile(user);
+                    
                     Console.WriteLine("User profile saved to file.");
                     break;
                 case 5:
-                    UserProfile loadedProfile = FileHandler.LoadUserProfile();
-                    if (loadedProfile != null)
+                    UserProfile loadedProfile = UserProfile.LoadUserProfile();
+                    if (loadedProfile!= null)
                     {
-                        Console.WriteLine($"Loaded user profile: {loadedProfile.Name}, {loadedProfile.Age}, {loadedProfile.Weight}, {loadedProfile.Height}");
+                    Console.WriteLine($"Loaded user profile: {loadedProfile.Name}, Age:{loadedProfile.Age}, Weight:{loadedProfile.Weight}, Height:{loadedProfile.Height}");
 
-                        Console.WriteLine("\nExercises:");
-                        foreach (Exercise loadedExercise in loadedProfile.Exercises)
-                        {
-                            Console.WriteLine($"Type: {loadedExercise.Type}, Duration: {loadedExercise.Duration}, Calories Burned: {loadedExercise.CaloriesBurned}");
-                        }
-
-                        Console.WriteLine("\nMeals:");
-                        foreach (Meal loadedMeal in loadedProfile.Meals)
-                        {
-                            Console.WriteLine($"Type: {loadedMeal.Type}, Calories: {loadedMeal.Calories}, Ingredients: {string.Join(", ", loadedMeal.Ingredients)}");
-                        }
-
-                        Console.WriteLine("\nFitness Goals:");
-                        foreach (FitnessGoal loadedGoal in loadedProfile.FitnessGoals)
-                        {
-                            Console.WriteLine($"Type: {loadedGoal.Type}, Target: {loadedGoal.Target}, Progress: {loadedGoal.Progress}");
-                        }
-                    }
-                    else
+                    Console.WriteLine("\nExercises:");
+                    foreach (Exercise loadedExercise in loadedProfile.Exercises)
                     {
-                        Console.WriteLine("No user profile found.");
+                    Console.WriteLine($"Type: {loadedExercise.Type}, Duration: {loadedExercise.Duration}, Calories: {loadedExercise.CaloriesBurned}");
                     }
-                    break;
+
+                    Console.WriteLine("\nMeals:");
+                    foreach (Meal loadedMeal in loadedProfile.Meals)
+                    {
+                    Console.WriteLine($"Type: {loadedMeal.Type}");
+                    }
+
+                    Console.WriteLine("\nFitness Goals:");
+                    foreach (FitnessGoal loadedGoal in loadedProfile.FitnessGoals)
+                    {
+                    Console.WriteLine($"Type: {loadedGoal.Type}, Target: {loadedGoal.Target}, Progress: {loadedGoal.Progress}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No user profile found.");
+                }
+                break;
                 case 6:
                     exit = true;
                     break;

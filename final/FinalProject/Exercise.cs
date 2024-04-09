@@ -1,25 +1,32 @@
-using System;
-
-public class Exercise
+public class Exercise : UserProfile
 {
-    public string Type { get; set; }
-    public int Duration { get; set; } // in minutes
-    public double CaloriesBurned { get; set; }
+    internal object CaloriesBurned;
 
-    public Exercise(string type, int duration, double caloriesBurned)
+    public string Type { get; set; }
+    public int Duration { get; set; }
+
+    public Exercise(string type, int duration, double weight, int age):  base ( weight, age)
     {
         Type = type;
         Duration = duration;
-        CaloriesBurned = caloriesBurned;
     }
 
-    public double GetAverageCaloriesBurnedPerMinute()
+    public Exercise(string name, int age, double weight, double height) : base(name, age, weight, height)
     {
-        if (Duration == 0)
+    }
+    public double CalculateCaloriesBurned()
+    {
+        double caloriesBurned = 0.0;
+
+        if (Type.ToLower() == "cardio")
         {
-            return 0.0; // Prevent division by zero
+            caloriesBurned = (0.052 * Weight + 0.63) * Duration;
+        }
+        else if (Type.ToLower() == "strength")
+        {
+            caloriesBurned = (0.020 * Weight + 0.35) * Duration;
         }
 
-        return CaloriesBurned / Duration;
+        return caloriesBurned;
     }
 }
